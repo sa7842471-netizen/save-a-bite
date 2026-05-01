@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NGO Portal | Save-A-Bite</title>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.nav-open{display:flex!important;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:#fff;padding:1rem 2rem;border-bottom:1px solid var(--border);gap:.5rem;z-index:998;}
+.donation-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+.progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:.3rem;}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span>🍃</span>Save-A-Bite</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li><li><a href="donor.html">Donate Food</a></li>
+    <li><a href="ngo.html">NGO Portal</a></li><li><a href="volunteer.html">Volunteer</a></li>
+    <li><a href="admin.html">Dashboard</a></li>
+  </ul>
+  <a href="#" class="nav-cta" onclick="switchTab('register',document.querySelector('.tab-btn'))">Register NGO</a>
+  <button class="nav-toggle" id="navToggle">☰</button>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8);">
+  <div class="container">
+    <div class="section-tag" style="background:rgba(255,255,255,.15);color:#93C5FD;">NGO Partner Portal</div>
+    <h1>🏥 NGO Dashboard</h1>
+    <p>Browse nearby donations, accept requests, and track deliveries in real-time.</p>
+  </div>
+</div>
+
+<div class="container page-top" style="margin-top:2rem;">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('register',this)">🏥 Register / Profile</button>
+    <button class="tab-btn" onclick="switchTab('browse',this)">🔍 Browse Donations</button>
+    <button class="tab-btn" onclick="switchTab('accepted',this)">✅ My Accepted</button>
+    <button class="tab-btn" onclick="switchTab('matched',this)">🤖 Smart Matches</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="tab-panel active" id="tab-register">
+    <div class="grid-2" style="gap:2rem;align-items:start;">
+      <div>
+        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:.3rem;">NGO Registration</h2>
+        <p style="color:var(--text-muted);margin-bottom:1.5rem;font-size:.9rem;">Register your NGO to start receiving food donations.</p>
+        <form id="ngoRegForm">
+          <div class="form-group"><label>NGO Name *</label><input type="text" id="nName" placeholder="e.g. Akshaya Patra Foundation" required/></div>
+          <div class="form-row">
+            <div class="form-group"><label>Email *</label><input type="email" id="nEmail" required/></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" id="nPhone" required/></div>
+          </div>
+          <div class="form-group"><label>NGO Type</label>
+            <select id="nType"><option>🍽️ Food Bank</option><option>🏠 Shelter</option><option>👶 Child Welfare</option><option>👴 Old Age Home</option><option>🌍 Community Kitchen</option></select>
+          </div>
+          <div class="form-group"><label>Service Area / Location *</label><input type="text" id="nAddress" placeholder="Area, City" required/></div>
+          <div class="form-group"><label>Daily Capacity (meals/kg) *</label><input type="number" id="nCapacity" placeholder="200" min="1" required/></div>
+          <div class="form-row">
+            <div class="form-group"><label>Latitude</label><input type="number" id="nLat" placeholder="12.9160" step="0.0001"/></div>
+            <div class="form-group"><label>Longitude</label><input type="number" id="nLng" placeholder="77.6100" step="0.0001"/></div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">✅ Register NGO</button>
+        </form>
+      </div>
+      <div>
+        <div class="card" id="ngoProfileCard" style="display:none;">
+          <div class="card-header"><span class="card-title">🏥 Your NGO Profile</span><span class="badge badge-safe">✅ Active</span></div>
+          <div id="ngoProfileContent"></div>
+        </div>
+        <div class="card" style="margin-top:1rem;" id="ngoStatsCard" style="display:none;">
+          <div class="card-title" style="margin-bottom:1rem;">📊 Your Stats</div>
+          <div id="ngoStats"></div>
+        </div>
+        <div class="card" style="margin-top:1rem;background:linear-gradient(135deg,#1e3a5f,#1d4ed8);color:#fff;border:none;">
+          <h3 style="margin-bottom:.8rem;">🌟 NGO Benefits</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;font-size:.88rem;color:rgba(255,255,255,.8);">
+            <li>✅ Real-time food availability alerts</li>
+            <li>✅ Smart matching prioritisation</li>
+            <li>✅ Volunteer delivery coordination</li>
+            <li>✅ Impact reporting &amp; analytics</li>
+            <li>✅ Direct donor communication</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROWSE -->
+  <div class="tab-panel" id="tab-browse">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+      <h2 style="font-size:1.5rem;font-weight:800;">Available Donations Near You</h2>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+        <select id="filterType" onchange="renderBrowse()" style="padding:.5rem .8rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;">
+          <option value="">All Types</option><option value="cooked">Cooked</option><option value="raw">Raw</option><option value="packaged">Packaged</option>
+        </select>
+        <select id="filterUrgency" onchange="renderBrowse()" style="padding:.5rem .8rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;">
+          <option value="">All Urgency</option><option value="critical">🔴 Critical</option><option value="warning">🟠 Warning</option><option value="safe">🟢 Safe</option>
+        </select>
+      </div>
+    </div>
+    <div class="donation-list" id="browseGrid"></div>
+  </div>
+
+  <!-- ACCEPTED -->
+  <div class="tab-panel" id="tab-accepted">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.5rem;">Accepted Donations</h2>
+    <div class="donation-list" id="acceptedGrid"></div>
+  </div>
+
+  <!-- SMART MATCHES -->
+  <div class="tab-panel" id="tab-matched">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <h2 style="font-size:1.5rem;font-weight:800;">🤖 AI Smart Matches</h2>
+      <span class="badge badge-info">Sorted by urgency + distance + score</span>
+    </div>
+    <div class="donation-list" id="matchedGrid"></div>
+  </div>
+</div>
+
+<div style="height:4rem;"></div>
+<footer><div class="container"><div class="footer-bottom">© 2024 Save-A-Bite · Saving Food. Serving Hope.</div></div></footer>
+
+<script src="js/app.js"></script>
+<script>
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='browse')renderBrowse();
+  if(id==='accepted')renderAccepted();
+  if(id==='matched')renderMatched();
+  if(id==='register')loadNGOProfile();
+}
+
+function loadNGOProfile(){
+  const ngo=DB.get('currentNGO');
+  if(!ngo)return;
+  document.getElementById('ngoProfileCard').style.display='block';
+  document.getElementById('ngoProfileContent').innerHTML=`
+    <p><strong>Name:</strong> ${ngo.name}</p>
+    <p><strong>Email:</strong> ${ngo.email}</p>
+    <p><strong>Location:</strong> ${ngo.location.address}</p>
+    <p><strong>Capacity:</strong> ${ngo.capacity} meals/day</p>
+    <div class="progress-bar" style="margin-top:.5rem;"><div class="progress-fill" style="width:70%;"></div></div>
+    <p style="font-size:.75rem;color:var(--text-muted);">70% capacity used today</p>
+    <p style="margin-top:.5rem;"><span class="badge badge-info">⭐ Rating: ${ngo.rating}</span></p>`;
+  const myAccepted=DB.list('donations').filter(d=>d.ngoId===ngo.id);
+  document.getElementById('ngoStatsCard').style.display='block';
+  document.getElementById('ngoStats').innerHTML=`
+    <div class="grid-2" style="gap:.8rem;">
+      <div style="text-align:center;padding:.8rem;background:var(--bg);border-radius:10px;">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--primary);">${myAccepted.length}</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">Total Accepted</div>
+      </div>
+      <div style="text-align:center;padding:.8rem;background:var(--bg);border-radius:10px;">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--safe);">${myAccepted.filter(d=>d.status==='delivered').length}</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">Delivered</div>
+      </div>
+    </div>`;
+}
+
+document.getElementById('ngoRegForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const ngo={
+    id:genId('n'),
+    name:document.getElementById('nName').value,
+    email:document.getElementById('nEmail').value,
+    phone:document.getElementById('nPhone').value,
+    type:document.getElementById('nType').value,
+    location:{
+      lat:parseFloat(document.getElementById('nLat').value)||12.916+Math.random()*.04,
+      lng:parseFloat(document.getElementById('nLng').value)||77.610+Math.random()*.04,
+      address:document.getElementById('nAddress').value
+    },
+    capacity:parseInt(document.getElementById('nCapacity').value),
+    rating:4.0,active:true,
+    registered:new Date().toISOString()
+  };
+  DB.push('ngos',ngo);
+  DB.set('currentNGO',ngo);
+  toast('NGO registered successfully!','success');
+  loadNGOProfile();e.target.reset();
+});
+
+function renderBrowse(){
+  const typeFilter=document.getElementById('filterType').value;
+  const urgFilter=document.getElementById('filterUrgency').value;
+  const donations=DB.list('donations').filter(d=>{
+    if(d.status!=='pending')return false;
+    if(typeFilter&&d.foodType!==typeFilter)return false;
+    if(urgFilter&&calcUrgency(d.expiry).label!==urgFilter)return false;
+    return true;
+  }).sort((a,b)=>calcUrgency(a.expiry).days-calcUrgency(b.expiry).days);
+  const grid=document.getElementById('browseGrid');
+  if(!donations.length){grid.innerHTML='<p style="color:var(--text-muted);">No available donations found.</p>';return;}
+  const ngo=DB.get('currentNGO')||DB.list('ngos')[0];
+  grid.innerHTML=donations.map(d=>{
+    const dist=ngo?haversine(ngo.location,d.location).toFixed(1):'?';
+    return`<div class="card donation-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <h4 style="font-weight:700;">${d.emoji||'🍱'} ${d.foodName}</h4>
+        ${urgencyBadge(d.expiry)}
+      </div>
+      <p style="font-size:.83rem;color:var(--text-muted);margin:.4rem 0;">By ${d.donorName}</p>
+      <div class="donation-meta">
+        <span>📦 ${d.quantity} ${d.unit}</span><span>🍽️ ${d.foodType}</span>
+        <span>📍 ${dist} km away</span>
+        <span>${d.deliveryOption==='pickup'?'🚴 Pickup':'🚚 Self-delivery'}</span>
+      </div>
+      <p style="font-size:.82rem;color:var(--text-muted);">🗓️ Expires: ${fmtDate(d.expiry)}</p>
+      <p style="font-size:.82rem;color:var(--text-muted);">📍 ${d.location.address}</p>
+      <div class="donation-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptDonation('${d.id}')">✅ Accept</button>
+        <button class="btn btn-outline btn-sm" onclick="rejectDonation('${d.id}')">❌ Skip</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function acceptDonation(id){
+  const ngo=DB.get('currentNGO')||DB.list('ngos')[0];
+  if(!ngo){toast('Please register your NGO first!','error');return;}
+  DB.update('donations',id,{status:'accepted',ngoId:ngo.id});
+  toast('✅ Donation accepted! Volunteers will be notified.','success');
+  renderBrowse();
+}
+function rejectDonation(id){
+  toast('Donation skipped.','warn');
+  document.getElementById('browseGrid').querySelectorAll('.card').forEach(c=>{
+    if(c.innerHTML.includes(id))c.style.opacity='.4';
+  });
+}
+
+function renderAccepted(){
+  const ngo=DB.get('currentNGO')||DB.list('ngos')[0];
+  const donations=DB.list('donations').filter(d=>ngo&&d.ngoId===ngo.id&&d.status!=='pending');
+  const grid=document.getElementById('acceptedGrid');
+  if(!donations.length){grid.innerHTML='<p style="color:var(--text-muted);">No accepted donations yet.</p>';return;}
+  grid.innerHTML=donations.map(d=>`
+  <div class="card donation-card">
+    <div style="display:flex;justify-content:space-between;">
+      <h4 style="font-weight:700;">${d.emoji||'🍱'} ${d.foodName}</h4>${statusBadge(d.status)}
+    </div>
+    <p style="font-size:.82rem;color:var(--text-muted);margin:.4rem 0;">By ${d.donorName} · ${d.location.address}</p>
+    <div class="donation-meta"><span>📦 ${d.quantity} ${d.unit}</span></div>
+    <div class="status-steps" style="margin:1rem 0;">
+      <div class="status-step ${['accepted','picked','delivered'].includes(d.status)?'done':''}">Accepted</div>
+      <div class="status-step ${['picked','delivered'].includes(d.status)?'done':d.status==='accepted'?'active':''}">Picked</div>
+      <div class="status-step ${d.status==='delivered'?'done':d.status==='picked'?'active':''}">Delivered</div>
+    </div>
+    ${d.status!=='delivered'?`<div style="display:flex;gap:.5rem;">
+      ${d.status==='accepted'?`<button class="btn btn-accent btn-sm" onclick="updateStatus('${d.id}','picked')">🚴 Mark Picked</button>`:''}
+      ${d.status==='picked'?`<button class="btn btn-primary btn-sm" onclick="updateStatus('${d.id}','delivered')">📦 Mark Delivered</button>`:''}
+    </div>`:`<span class="badge badge-safe" style="margin-top:.5rem;">🎉 Delivered Successfully</span>`}
+  </div>`).join('');
+}
+
+function updateStatus(id,status){
+  DB.update('donations',id,{status});
+  toast(`Status updated to: ${status}`,'success');
+  renderAccepted();
+}
+
+function renderMatched(){
+  const ngo=DB.get('currentNGO')||DB.list('ngos')[0];
+  const ngos=ngo?[ngo]:DB.list('ngos');
+  const donations=DB.list('donations');
+  const matches=smartMatch(donations,ngos);
+  const grid=document.getElementById('matchedGrid');
+  if(!matches.length){grid.innerHTML='<p style="color:var(--text-muted);">No pending donations to match.</p>';return;}
+  grid.innerHTML=matches.map(m=>`
+  <div class="card donation-card" style="border-left:4px solid ${m.score>=70?'var(--primary)':m.score>=50?'var(--warning)':'var(--critical)'};">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <h4 style="font-weight:700;">${m.donation.emoji||'🍱'} ${m.donation.foodName}</h4>
+      ${urgencyBadge(m.donation.expiry)}
+    </div>
+    <p style="font-size:.82rem;color:var(--text-muted);margin:.3rem 0;">By ${m.donation.donorName}</p>
+    <div class="donation-meta">
+      <span>📦 ${m.donation.quantity} ${m.donation.unit}</span>
+      <span>🎯 Match Score: <strong>${m.score}/100</strong></span>
+    </div>
+    ${m.best?`<p style="font-size:.82rem;margin:.5rem 0;color:var(--primary);font-weight:600;">🏥 Best Match: ${m.best.name} (${haversine(m.donation.location,m.best.location).toFixed(1)}km)</p>`:''}
+    <button class="btn btn-primary btn-sm" style="margin-top:.5rem;" onclick="acceptDonation('${m.donation.id}')">✅ Accept This Donation</button>
+  </div>`).join('');
+}
+
+loadNGOProfile();
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Save-A-Bite | Saving Food. Serving Hope.</title>
+<meta name="description" content="Save-A-Bite connects food donors with NGOs and volunteers to distribute surplus food to those in need."/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.nav-open{display:flex!important;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:#fff;padding:1rem 2rem;border-bottom:1px solid var(--border);gap:.5rem;z-index:998;}
+.hero-wrap{display:flex;align-items:center;justify-content:space-between;gap:3rem;min-height:calc(100vh - 68px);padding:2rem 0;}
+.hero-visual{flex-shrink:0;position:relative;}
+.dna-ring{width:320px;height:320px;position:relative;}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.15);}
+.ring:nth-child(1){animation:spin 12s linear infinite;}
+.ring:nth-child(2){inset:20px;border-color:rgba(251,191,36,.25);animation:spin 8s linear infinite reverse;}
+.ring:nth-child(3){inset:45px;border-color:rgba(134,239,172,.2);animation:spin 16s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ring-center{position:absolute;inset:80px;background:rgba(255,255,255,.08);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.2);}
+.ring-icon{font-size:2.8rem;}
+.ring-label{color:rgba(255,255,255,.9);font-weight:700;font-size:.85rem;margin-top:.3rem;}
+@media(max-width:840px){.hero-visual{display:none;}.hero-wrap{justify-content:center;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span>🍃</span>Save-A-Bite</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="donor.html">Donate Food</a></li>
+    <li><a href="ngo.html">NGO Portal</a></li>
+    <li><a href="volunteer.html">Volunteer</a></li>
+    <li><a href="admin.html">Dashboard</a></li>
+  </ul>
+  <a href="donor.html" class="nav-cta">Donate Now</a>
+  <button class="nav-toggle" id="navToggle">☰</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+  <div id="foodFloat"></div>
+  <div class="container">
+    <div class="hero-wrap">
+      <div class="hero-content">
+        <div class="hero-tag">🌍 Social Impact Platform · India</div>
+        <h1><span class="accent">Save-A-Bite</span><br/>Saving Food.<br/>Serving Hope.</h1>
+        <p class="hero-tagline">"Every meal saved is a life touched."</p>
+        <p class="hero-desc">Connecting food donors with NGOs and volunteers to efficiently distribute surplus food to those who need it most — reducing hunger and food waste together.</p>
+        <div class="hero-btns">
+          <a href="donor.html" class="btn btn-accent">🍱 Donate Food</a>
+          <a href="ngo.html" class="btn btn-outline" style="color:#86EFAC;border-color:#86EFAC;">🏥 NGO Portal</a>
+          <a href="volunteer.html" class="btn btn-outline" style="color:#FBBF24;border-color:#FBBF24;">🚴 Volunteer</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num" id="h1">0</div><div class="lbl">Meals Saved</div></div>
+          <div class="hero-stat"><div class="num" id="h2">0</div><div class="lbl">NGO Partners</div></div>
+          <div class="hero-stat"><div class="num" id="h3">0</div><div class="lbl">Volunteers</div></div>
+          <div class="hero-stat"><div class="num" id="h4">0</div><div class="lbl">Cities Covered</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="dna-ring">
+          <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+          <div class="ring-center"><div class="ring-icon">🌱</div><div class="ring-label">Save-A-Bite</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT STATS -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:1rem;"><div class="section-tag">Real Impact</div></div>
+    <h2 class="section-title" style="text-align:center;">Our Numbers Speak</h2>
+    <div class="stats-grid">
+      <div class="card stat-card"><div class="stat-icon">🍛</div><span class="stat-num" id="s1">0</span><div class="stat-label">Total Meals Saved</div></div>
+      <div class="card stat-card"><div class="stat-icon">🏥</div><span class="stat-num" id="s2">0</span><div class="stat-label">NGO Partners</div></div>
+      <div class="card stat-card"><div class="stat-icon">🚴</div><span class="stat-num" id="s3">0</span><div class="stat-label">Active Volunteers</div></div>
+      <div class="card stat-card"><div class="stat-icon">♻️</div><span class="stat-num" id="s4">0</span><div class="stat-label">Kg Food Rescued</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-tag">Process</div>
+    <h2 class="section-title">How Save-A-Bite Works</h2>
+    <p class="section-sub">Four simple steps from surplus food to served meals.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h4>Donor Lists Food</h4><p>Restaurants, individuals & companies post surplus food with expiry details and pickup location.</p></div>
+      <div class="step"><div class="step-num">2</div><h4>Smart Matching</h4><p>Our algorithm matches donations to the nearest NGO based on urgency, quantity & reliability.</p></div>
+      <div class="step"><div class="step-num">3</div><h4>Volunteer Picks Up</h4><p>A volunteer accepts the delivery task and picks up from the donor location.</p></div>
+      <div class="step"><div class="step-num">4</div><h4>Meals Served</h4><p>Food reaches the NGO and is distributed to people in need. Impact is recorded.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DONATIONS -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;">
+      <div><div class="section-tag">Live Feed</div><h2 class="section-title">Active Donations</h2></div>
+      <a href="ngo.html" class="btn btn-outline">View All →</a>
+    </div>
+    <div class="grid-3" id="donationsGrid"></div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="section">
+  <div class="container">
+    <div class="section-tag">Live Tracking</div>
+    <h2 class="section-title">Real-Time Food Map</h2>
+    <p class="section-sub">Track donors, NGOs, and delivery routes across the city.</p>
+    <div class="map-container" style="margin-top:2rem;">
+      <canvas id="mapCanvas"></canvas>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#16A34A"></div>Donor</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div>NGO</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F97316"></div>Volunteer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>Critical Route</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22C55E"></div>Safe Route</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;" class="lb-wrap">
+      <div>
+        <div class="section-tag">Heroes</div>
+        <h2 class="section-title">Volunteer Leaderboard</h2>
+        <p class="section-sub">Our top volunteers making a difference every day.</p>
+        <div id="leaderboard" style="margin-top:1.5rem;"></div>
+        <a href="volunteer.html" class="btn btn-primary" style="margin-top:1.5rem;">Join as Volunteer →</a>
+      </div>
+      <div>
+        <div class="section-tag">CSR Impact</div>
+        <h2 class="section-title">Partner With Us</h2>
+        <p class="section-sub">Companies reducing food waste earn our Zero Waste badge.</p>
+        <div class="grid-2" style="margin-top:1.5rem;" id="csr-grid">
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.5rem;">🏆</div>
+            <h4 style="margin:.5rem 0 .2rem;">Zero Waste Partner</h4>
+            <p style="font-size:.82rem;color:var(--text-muted);">Badge for 10+ donations</p>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.5rem;">🌱</div>
+            <h4 style="margin:.5rem 0 .2rem;">CSR Verified</h4>
+            <p style="font-size:.82rem;color:var(--text-muted);">Tax-benefit eligible</p>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.5rem;">📊</div>
+            <h4 style="margin:.5rem 0 .2rem;">Impact Reports</h4>
+            <p style="font-size:.82rem;color:var(--text-muted);">Monthly analytics</p>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.5rem;">🤝</div>
+            <h4 style="margin:.5rem 0 .2rem;">Priority Matching</h4>
+            <p style="font-size:.82rem;color:var(--text-muted);">Fastest NGO assignment</p>
+          </div>
+        </div>
+        <a href="donor.html" class="btn btn-primary" style="margin-top:1.5rem;">Become a Donor →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span>🍃</span>Save-A-Bite</div>
+        <p style="font-size:.85rem;line-height:1.7;color:rgba(255,255,255,.55);">Bridging the gap between food surplus and food scarcity. Every bite saved is hope served.</p>
+      </div>
+      <div class="footer-links"><h4>Platform</h4><ul><li><a href="donor.html">Donate Food</a></li><li><a href="ngo.html">NGO Portal</a></li><li><a href="volunteer.html">Volunteer</a></li><li><a href="admin.html">Dashboard</a></li></ul></div>
+      <div class="footer-links"><h4>About</h4><ul><li><a href="#">Mission</a></li><li><a href="#">Impact</a></li><li><a href="#">CSR Partners</a></li><li><a href="#">Blog</a></li></ul></div>
+      <div class="footer-links"><h4>Contact</h4><ul><li><a href="#">help@saveabite.in</a></li><li><a href="#">+91 98765 43210</a></li><li><a href="#">Bangalore, India</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">© 2024 Save-A-Bite. Made with ❤️ to end hunger. · <em>Saving Food. Serving Hope.</em></div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/map.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // Floating food emojis
+  const foods=['🍛','🥗','🍞','🥘','🫓','🍚','🥙','🌾','🍱'];
+  const ff=document.getElementById('foodFloat');
+  if(ff){
+    setInterval(()=>{
+      const el=document.createElement('div');
+      el.className='food-float';
+      el.textContent=foods[Math.floor(Math.random()*foods.length)];
+      el.style.left=Math.random()*90+'%';
+      el.style.bottom='0';
+      el.style.animationDuration=(4+Math.random()*4)+'s';
+      el.style.fontSize=(1.2+Math.random())+'rem';
+      ff.appendChild(el);
+      setTimeout(()=>el.remove(),8000);
+    },900);
+  }
+
+  // Hero counters
+  setTimeout(()=>{
+    animCount(document.getElementById('h1'),12480);
+    animCount(document.getElementById('h2'),38);
+    animCount(document.getElementById('h3'),214);
+    animCount(document.getElementById('h4'),12);
+  },400);
+
+  // Stats from DB
+  const donations=DB.list('donations');
+  const ngos=DB.list('ngos');
+  const volunteers=DB.list('volunteers');
+  const meals=donations.reduce((s,d)=>s+(d.unit==='meals'?d.quantity:Math.round(d.quantity/0.3)),0);
+  animCount(document.getElementById('s1'),meals+10240);
+  animCount(document.getElementById('s2'),ngos.length+35);
+  animCount(document.getElementById('s3'),volunteers.length+209);
+  animCount(document.getElementById('s4'),Math.round(meals*0.25)+3200);
+
+  // Donations grid
+  const grid=document.getElementById('donationsGrid');
+  donations.slice(0,6).forEach(d=>{
+    const u=calcUrgency(d.expiry);
+    grid.innerHTML+=`
+    <div class="card donation-card">
+      <div class="food-img">${d.emoji||'🍱'}</div>
+      <div class="urgency-indicator">${urgencyBadge(d.expiry)}</div>
+      <h4 style="font-weight:700;">${d.foodName}</h4>
+      <p style="font-size:.83rem;color:var(--text-muted);margin:.3rem 0;">${d.donorName} · ${d.location.address}</p>
+      <div class="donation-meta">
+        <span>📦 ${d.quantity} ${d.unit}</span>
+        <span>🍽️ ${d.foodType}</span>
+        <span>${d.deliveryOption==='pickup'?'📍 Pickup':'🚚 Self-Delivery'}</span>
+      </div>
+      ${statusBadge(d.status)}
+    </div>`;
+  });
+
+  // Leaderboard
+  const vols=[...DB.list('volunteers')].sort((a,b)=>b.points-a.points);
+  const rankCls=['gold','silver','bronze'];
+  const lb=document.getElementById('leaderboard');
+  vols.slice(0,5).forEach((v,i)=>{
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
+    lb.innerHTML+=`
+    <div class="leaderboard-item">
+      <div class="lb-rank ${rankCls[i]||'other'}">${i+1}</div>
+      <div style="font-size:1.5rem;">${medals[i]||''}</div>
+      <div class="lb-name">${v.name}<br/><span style="font-size:.75rem;color:var(--text-muted);">⭐${v.rating} · ${v.deliveries} deliveries</span></div>
+      <div class="lb-points">${v.points.toLocaleString()} pts</div>
+    </div>`;
+  });
+
+  // Map
+  const map=new SABMap('mapCanvas');
+  const{markers,routes}=buildMapData();
+  // Add some demo volunteers on map
+  DB.list('volunteers').forEach(v=>markers.push({lat:v.location.lat,lng:v.location.lng,type:'volunteer',label:v.name}));
+  map.load(markers,routes);
+  map.animate();
+});
+
+// Responsive leaderboard grid
+const lbWrap=document.querySelector('.lb-wrap');
+function checkLbWrap(){if(lbWrap)lbWrap.style.gridTemplateColumns=window.innerWidth<700?'1fr':'1fr 1fr';}
+window.addEventListener('resize',checkLbWrap);checkLbWrap();
+</script>
+</body>
+</html>

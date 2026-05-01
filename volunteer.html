@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Volunteer | Save-A-Bite</title>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.nav-open{display:flex!important;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:#fff;padding:1rem 2rem;border-bottom:1px solid var(--border);gap:.5rem;z-index:998;}
+.task-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+.vol-profile{background:linear-gradient(135deg,#7c2d12,#ea580c);color:#fff;border-radius:var(--radius);padding:1.5rem;border:none;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span>🍃</span>Save-A-Bite</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li><li><a href="donor.html">Donate Food</a></li>
+    <li><a href="ngo.html">NGO Portal</a></li><li><a href="volunteer.html">Volunteer</a></li>
+    <li><a href="admin.html">Dashboard</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Join Now</a>
+  <button class="nav-toggle" id="navToggle">☰</button>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg,#431407,#c2410c);">
+  <div class="container">
+    <div class="section-tag" style="background:rgba(255,255,255,.15);color:#FED7AA;">🚴 Volunteer Hub</div>
+    <h1>🦸 Volunteer Portal</h1>
+    <p>Accept delivery tasks, earn points, and climb the leaderboard while making a difference.</p>
+  </div>
+</div>
+
+<div class="container page-top" style="margin-top:2rem;">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('register',this)">👤 Register</button>
+    <button class="tab-btn" onclick="switchTab('tasks',this)">📋 Available Tasks</button>
+    <button class="tab-btn" onclick="switchTab('mytasks',this)">🚴 My Deliveries</button>
+    <button class="tab-btn" onclick="switchTab('leaderboard',this)">🏆 Leaderboard</button>
+    <button class="tab-btn" onclick="switchTab('map',this)">🗺️ Map</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="tab-panel active" id="tab-register">
+    <div class="grid-2" style="gap:2rem;align-items:start;">
+      <div>
+        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:.3rem;">Volunteer Registration</h2>
+        <p style="color:var(--text-muted);margin-bottom:1.5rem;font-size:.9rem;">Join our delivery network and start earning impact points.</p>
+        <form id="volRegForm">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="vName" placeholder="Your name" required/></div>
+          <div class="form-row">
+            <div class="form-group"><label>Email *</label><input type="email" id="vEmail" required/></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" id="vPhone" required/></div>
+          </div>
+          <div class="form-group"><label>Transport Mode</label>
+            <select id="vTransport"><option value="bike">🏍️ Bike / Scooter</option><option value="cycle">🚴 Bicycle</option><option value="car">🚗 Car</option><option value="walk">🚶 Walking (short distance)</option></select>
+          </div>
+          <div class="form-group"><label>Your Area / Location *</label><input type="text" id="vAddress" placeholder="Area, City" required/></div>
+          <div class="form-group"><label>Available Hours</label>
+            <select id="vHours"><option>Morning (6am–12pm)</option><option>Afternoon (12pm–6pm)</option><option>Evening (6pm–9pm)</option><option>Flexible / All day</option></select>
+          </div>
+          <button type="submit" class="btn btn-accent btn-full">🚀 Join as Volunteer</button>
+        </form>
+      </div>
+      <div id="volRightPanel">
+        <div class="card" id="volProfileCard" style="display:none;background:linear-gradient(135deg,#7c2d12,#ea580c);color:#fff;border:none;">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;">🦸</div>
+            <div><div id="vProfileName" style="font-size:1.1rem;font-weight:800;"></div><div style="font-size:.82rem;opacity:.8;" id="vProfileArea"></div></div>
+          </div>
+          <div class="grid-2" style="gap:.8rem;">
+            <div style="text-align:center;padding:.8rem;background:rgba(255,255,255,.15);border-radius:10px;">
+              <div style="font-size:1.6rem;font-weight:900;" id="vProfilePoints">0</div>
+              <div style="font-size:.75rem;opacity:.8;">Points</div>
+            </div>
+            <div style="text-align:center;padding:.8rem;background:rgba(255,255,255,.15);border-radius:10px;">
+              <div style="font-size:1.6rem;font-weight:900;" id="vProfileDeliveries">0</div>
+              <div style="font-size:.75rem;opacity:.8;">Deliveries</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem;" id="vProfileBadges"></div>
+        </div>
+        <div class="card" style="margin-top:1rem;">
+          <h4 style="font-weight:700;margin-bottom:1rem;">🏅 Earn Points & Badges</h4>
+          <div style="display:flex;flex-direction:column;gap:.7rem;">
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.7rem;background:var(--bg);border-radius:8px;">
+              <span style="font-size:1.3rem;">⭐</span><div><strong>50 pts</strong> per delivery<br/><span style="font-size:.78rem;color:var(--text-muted);">Base points per completed delivery</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.7rem;background:#FEE2E2;border-radius:8px;">
+              <span style="font-size:1.3rem;">🔴</span><div><strong>+100 pts</strong> for critical deliveries<br/><span style="font-size:.78rem;color:var(--critical);">Bonus for urgent items</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.7rem;background:#DCFCE7;border-radius:8px;">
+              <span style="font-size:1.3rem;">🏆</span><div><strong>Speed Hero</strong> badge<br/><span style="font-size:.78rem;color:var(--text-muted);">Complete 10 critical deliveries</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.7rem;background:#DBEAFE;border-radius:8px;">
+              <span style="font-size:1.3rem;">🌟</span><div><strong>Super Saver</strong> badge<br/><span style="font-size:.78rem;color:var(--text-muted);">500+ points earned</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="tab-panel" id="tab-tasks">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem;">
+      <h2 style="font-size:1.5rem;font-weight:800;">Available Delivery Tasks</h2>
+      <select id="taskUrgFilter" onchange="renderTasks()" style="padding:.5rem .8rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;">
+        <option value="">All Urgency</option><option value="critical">🔴 Critical First</option><option value="warning">🟠 Warning</option><option value="safe">🟢 Safe</option>
+      </select>
+    </div>
+    <div class="task-list" id="tasksGrid"></div>
+  </div>
+
+  <!-- MY TASKS -->
+  <div class="tab-panel" id="tab-mytasks">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.5rem;">My Deliveries</h2>
+    <div class="task-list" id="myTasksGrid"></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="tab-panel" id="tab-leaderboard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem;">
+      <h2 style="font-size:1.5rem;font-weight:800;">🏆 Volunteer Leaderboard</h2>
+      <span class="badge badge-info">Updated live</span>
+    </div>
+    <div style="max-width:600px;" id="fullLeaderboard"></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="tab-panel" id="tab-map">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1rem;">🗺️ Delivery Map</h2>
+    <p style="color:var(--text-muted);margin-bottom:1.5rem;font-size:.9rem;">View pickup & drop locations and your active route.</p>
+    <div class="map-container">
+      <canvas id="volMapCanvas"></canvas>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#16A34A;"></div>Donor (Pickup)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2563EB;"></div>NGO (Drop)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F97316;"></div>You</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div>Critical Route</div>
+      </div>
+    </div>
+    <div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px;">
+      <p style="font-size:.85rem;font-weight:600;">📍 Navigation Tips</p>
+      <p style="font-size:.82rem;color:var(--text-muted);margin-top:.3rem;">Orange markers show your current accepted tasks. Click "Get Directions" on any task card to open navigation.</p>
+    </div>
+  </div>
+</div>
+
+<div style="height:4rem;"></div>
+<footer><div class="container"><div class="footer-bottom">© 2024 Save-A-Bite · Saving Food. Serving Hope.</div></div></footer>
+
+<script src="js/app.js"></script>
+<script src="js/map.js"></script>
+<script>
+let volMap=null;
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='tasks')renderTasks();
+  if(id==='mytasks')renderMyTasks();
+  if(id==='leaderboard')renderFullLeaderboard();
+  if(id==='register')loadVolProfile();
+  if(id==='map'){
+    if(!volMap){volMap=new SABMap('volMapCanvas');const{markers,routes}=buildMapData();DB.list('volunteers').forEach(v=>markers.push({lat:v.location.lat,lng:v.location.lng,type:'volunteer',label:v.name}));volMap.load(markers,routes);volMap.animate();}
+  }
+}
+
+function loadVolProfile(){
+  const vol=DB.get('currentVol');
+  if(!vol)return;
+  const card=document.getElementById('volProfileCard');card.style.display='block';
+  document.getElementById('vProfileName').textContent=vol.name;
+  document.getElementById('vProfileArea').textContent=vol.location.address;
+  document.getElementById('vProfilePoints').textContent=vol.points||0;
+  document.getElementById('vProfileDeliveries').textContent=vol.deliveries||0;
+  const badges=[];
+  if((vol.points||0)>=500)badges.push('🌟 Super Saver');
+  if((vol.deliveries||0)>=10)badges.push('🏆 Speed Hero');
+  if((vol.deliveries||0)>=20)badges.push('🦸 Delivery Champion');
+  document.getElementById('vProfileBadges').innerHTML=badges.map(b=>`<span class="badge" style="background:rgba(255,255,255,.2);color:#fff;margin:.2rem;">${b}</span>`).join('');
+}
+
+document.getElementById('volRegForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const vol={
+    id:genId('v'),
+    name:document.getElementById('vName').value,
+    email:document.getElementById('vEmail').value,
+    phone:document.getElementById('vPhone').value,
+    transport:document.getElementById('vTransport').value,
+    hours:document.getElementById('vHours').value,
+    location:{lat:12.935+Math.random()*.05,lng:77.610+Math.random()*.06,address:document.getElementById('vAddress').value},
+    rating:4.0,points:0,deliveries:0,active:true,
+    registered:new Date().toISOString()
+  };
+  DB.push('volunteers',vol);DB.set('currentVol',vol);
+  toast('Welcome, Volunteer! You can now accept tasks.','success');
+  loadVolProfile();e.target.reset();
+});
+
+function renderTasks(){
+  const uf=document.getElementById('taskUrgFilter').value;
+  const donations=DB.list('donations').filter(d=>d.status==='accepted'&&!d.volunteerId);
+  const sorted=donations.sort((a,b)=>calcUrgency(a.expiry).days-calcUrgency(b.expiry).days)
+    .filter(d=>!uf||calcUrgency(d.expiry).label===uf);
+  const grid=document.getElementById('tasksGrid');
+  if(!sorted.length){grid.innerHTML='<p style="color:var(--text-muted);">No tasks available right now. Check back soon!</p>';return;}
+  const ngos=DB.list('ngos');
+  grid.innerHTML=sorted.map(d=>{
+    const ngo=ngos.find(n=>n.id===d.ngoId);
+    const u=calcUrgency(d.expiry);
+    const pts=50+(u.label==='critical'?100:u.label==='warning'?30:0);
+    return`<div class="card donation-card" style="border-top:4px solid ${u.label==='critical'?'var(--critical)':u.label==='warning'?'var(--warning)':'var(--safe)'};">
+      <div style="display:flex;justify-content:space-between;">${urgencyBadge(d.expiry)}<span class="badge badge-info">+${pts} pts</span></div>
+      <h4 style="font-weight:700;margin:.6rem 0;">${d.emoji||'🍱'} ${d.foodName}</h4>
+      <div style="background:var(--bg);border-radius:10px;padding:.8rem;margin:.6rem 0;font-size:.83rem;">
+        <p>📍 <strong>Pickup:</strong> ${d.location.address}</p>
+        ${ngo?`<p style="margin-top:.3rem;">🏥 <strong>Drop:</strong> ${ngo.location.address}</p>`:''}
+      </div>
+      <div class="donation-meta"><span>📦 ${d.quantity} ${d.unit}</span></div>
+      <div style="display:flex;gap:.5rem;margin-top:.8rem;">
+        <button class="btn btn-accent btn-sm" style="flex:1;" onclick="acceptTask('${d.id}',${pts})">✅ Accept Task</button>
+        <a class="btn btn-outline btn-sm" href="https://maps.google.com/?q=${d.location.lat},${d.location.lng}" target="_blank">🗺️ Map</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function acceptTask(donId,pts){
+  const vol=DB.get('currentVol')||DB.list('volunteers')[0];
+  if(!vol){toast('Please register as a volunteer first!','error');return;}
+  DB.update('donations',donId,{volunteerId:vol.id,status:'picked'});
+  const updVol=DB.list('volunteers').find(v=>v.id===vol.id);
+  const newPts=(updVol?.points||0)+pts;
+  const newDel=(updVol?.deliveries||0)+1;
+  DB.update('volunteers',vol.id,{points:newPts,deliveries:newDel});
+  DB.set('currentVol',{...vol,points:newPts,deliveries:newDel});
+  toast(`Task accepted! +${pts} points earned! 🎉`,'success');
+  renderTasks();loadVolProfile();
+}
+
+function renderMyTasks(){
+  const vol=DB.get('currentVol')||DB.list('volunteers')[0];
+  const donations=DB.list('donations').filter(d=>vol&&d.volunteerId===vol.id);
+  const grid=document.getElementById('myTasksGrid');
+  if(!donations.length){grid.innerHTML='<p style="color:var(--text-muted);">No deliveries yet. Accept a task to get started!</p>';return;}
+  grid.innerHTML=donations.map(d=>`
+  <div class="card donation-card">
+    <div style="display:flex;justify-content:space-between;">${statusBadge(d.status)}${urgencyBadge(d.expiry)}</div>
+    <h4 style="font-weight:700;margin:.6rem 0;">${d.emoji||'🍱'} ${d.foodName}</h4>
+    <p style="font-size:.82rem;color:var(--text-muted);">📍 ${d.location.address}</p>
+    <div class="status-steps" style="margin:1rem 0;">
+      <div class="status-step done">Accepted</div>
+      <div class="status-step ${['picked','delivered'].includes(d.status)?'done':'active'}">Picked Up</div>
+      <div class="status-step ${d.status==='delivered'?'done':d.status==='picked'?'active':''}">Delivered</div>
+    </div>
+    ${d.status==='picked'?`<button class="btn btn-primary btn-sm" onclick="markDelivered('${d.id}')">📦 Mark as Delivered</button>`:''}
+    ${d.status==='delivered'?`<span class="badge badge-safe">🎉 Completed! +50 pts</span>`:''}
+  </div>`).join('');
+}
+
+function markDelivered(id){
+  DB.update('donations',id,{status:'delivered'});
+  toast('Delivery completed! Great work! 🎉','success');
+  renderMyTasks();
+}
+
+function renderFullLeaderboard(){
+  const vols=[...DB.list('volunteers')].sort((a,b)=>(b.points||0)-(a.points||0));
+  const lb=document.getElementById('fullLeaderboard');
+  const rankCls=['gold','silver','bronze'];
+  const medals=['🥇','🥈','🥉'];
+  lb.innerHTML=vols.map((v,i)=>`
+  <div class="leaderboard-item" style="${i<3?'background:linear-gradient(90deg,var(--bg),transparent);padding:.9rem;border-radius:10px;margin-bottom:.4rem;':''}">
+    <div class="lb-rank ${rankCls[i]||'other'}">${i+1}</div>
+    <div style="font-size:1.3rem;">${medals[i]||'🔹'}</div>
+    <div class="lb-name">
+      ${v.name}<br/>
+      <span style="font-size:.75rem;color:var(--text-muted);">⭐${v.rating} · 🚴${v.deliveries||0} deliveries · ${v.location?.address||''}</span>
+      <div style="margin-top:.3rem;">
+        ${(v.points||0)>=500?'<span class="badge badge-safe" style="font-size:.7rem;">🌟 Super Saver</span>':''} 
+        ${(v.deliveries||0)>=10?'<span class="badge badge-info" style="font-size:.7rem;">🏆 Speed Hero</span>':''}
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div class="lb-points">${(v.points||0).toLocaleString()}</div>
+      <div style="font-size:.72rem;color:var(--text-muted);">points</div>
+    </div>
+  </div>`).join('');
+}
+
+loadVolProfile();
+</script>
+</body>
+</html>

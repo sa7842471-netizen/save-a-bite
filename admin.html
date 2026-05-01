@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Dashboard | Save-A-Bite</title>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.nav-open{display:flex!important;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:#fff;padding:1rem 2rem;border-bottom:1px solid var(--border);gap:.5rem;z-index:998;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;margin-bottom:2rem;}
+.kpi-card{padding:1.2rem 1.5rem;border-radius:var(--radius);position:relative;overflow:hidden;}
+.kpi-card .kpi-val{font-size:2.2rem;font-weight:900;display:block;}
+.kpi-card .kpi-label{font-size:.82rem;opacity:.85;margin-top:.2rem;}
+.kpi-card .kpi-icon{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:3rem;opacity:.15;}
+.data-table{width:100%;border-collapse:collapse;font-size:.87rem;}
+.data-table th{background:var(--bg);padding:.75rem 1rem;text-align:left;font-weight:700;color:var(--text-muted);border-bottom:2px solid var(--border);}
+.data-table td{padding:.7rem 1rem;border-bottom:1px solid var(--border);}
+.data-table tr:hover td{background:#F0FDF4;}
+.activity-feed{max-height:320px;overflow-y:auto;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span>🍃</span>Save-A-Bite</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li><li><a href="donor.html">Donate Food</a></li>
+    <li><a href="ngo.html">NGO Portal</a></li><li><a href="volunteer.html">Volunteer</a></li>
+    <li><a href="admin.html">Dashboard</a></li>
+  </ul>
+  <span class="nav-cta" style="background:var(--accent);color:#1A1A1A;">⚙️ Admin</span>
+  <button class="nav-toggle" id="navToggle">☰</button>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg,#0f172a,#1e3a5f);">
+  <div class="container">
+    <div class="section-tag" style="background:rgba(255,255,255,.15);color:#93C5FD;">⚙️ Admin Control Panel</div>
+    <h1>📊 Central Dashboard</h1>
+    <p>Monitor all donations, NGOs, volunteers and platform activity in real-time.</p>
+  </div>
+</div>
+
+<div class="container page-top" style="margin-top:2rem;">
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- CHARTS ROW -->
+  <div class="grid-2" style="gap:1.5rem;margin-bottom:2rem;">
+    <!-- Urgency Breakdown -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">⚡ Urgency Breakdown</span><span class="badge badge-info">Live</span></div>
+      <div id="urgencyChart" style="margin-top:1rem;"></div>
+    </div>
+    <!-- Activity Feed -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">📡 Live Activity Feed</span><button class="btn btn-outline btn-sm" onclick="refreshActivity()">↻ Refresh</button></div>
+      <div class="activity-feed" id="activityFeed"></div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="card" style="margin-bottom:2rem;">
+    <div class="card-header"><span class="card-title">🗺️ Platform Coverage Map</span><div style="display:flex;gap:.5rem;"><span class="badge badge-safe" id="donorCount">0 Donors</span><span class="badge badge-info" id="ngoCount">0 NGOs</span><span class="badge badge-warning" id="volCount">0 Volunteers</span></div></div>
+    <div class="map-container" style="margin-top:1rem;">
+      <canvas id="adminMapCanvas"></canvas>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#16A34A;"></div>Donor</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2563EB;"></div>NGO</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F97316;"></div>Volunteer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div>Critical</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F97316;"></div>Warning</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22C55E;"></div>Safe</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA TABLES -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchDTab('donations',this)">🍱 All Donations</button>
+    <button class="tab-btn" onclick="switchDTab('ngos',this)">🏥 NGOs</button>
+    <button class="tab-btn" onclick="switchDTab('volunteers',this)">🚴 Volunteers</button>
+    <button class="tab-btn" onclick="switchDTab('donors',this)">👤 Donors</button>
+  </div>
+
+  <div class="tab-panel active" id="dtab-donations">
+    <div class="card" style="overflow:auto;">
+      <table class="data-table" id="donationsTable"></table>
+    </div>
+  </div>
+  <div class="tab-panel" id="dtab-ngos">
+    <div class="card" style="overflow:auto;">
+      <table class="data-table" id="ngosTable"></table>
+    </div>
+  </div>
+  <div class="tab-panel" id="dtab-volunteers">
+    <div class="card" style="overflow:auto;">
+      <table class="data-table" id="volunteersTable"></table>
+    </div>
+  </div>
+  <div class="tab-panel" id="dtab-donors">
+    <div class="card" style="overflow:auto;">
+      <table class="data-table" id="donorsTable"></table>
+    </div>
+  </div>
+</div>
+
+<div style="height:4rem;"></div>
+<footer><div class="container"><div class="footer-bottom">© 2024 Save-A-Bite Admin Panel · Real-time monitoring</div></div></footer>
+
+<script src="js/app.js"></script>
+<script src="js/map.js"></script>
+<script>
+function switchDTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dtab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  renderTable(id);
+}
+
+function renderTable(type){
+  const donations=DB.list('donations');
+  const ngos=DB.list('ngos');
+  const volunteers=DB.list('volunteers');
+  const donors=DB.list('donors');
+  let html='';
+  if(type==='donations'){
+    html=`<thead><tr><th>Food</th><th>Donor</th><th>Qty</th><th>Type</th><th>Expiry</th><th>Status</th><th>Urgency</th><th>NGO</th></tr></thead><tbody>`;
+    html+=donations.map(d=>`<tr><td>${d.emoji||'🍱'} ${d.foodName}</td><td>${d.donorName}</td><td>${d.quantity} ${d.unit}</td><td>${d.foodType}</td><td>${fmtDate(d.expiry)}</td><td>${statusBadge(d.status)}</td><td>${urgencyBadge(d.expiry)}</td><td>${ngos.find(n=>n.id===d.ngoId)?.name||'—'}</td></tr>`).join('');
+    html+='</tbody>';
+  } else if(type==='ngos'){
+    html=`<thead><tr><th>Name</th><th>Email</th><th>Location</th><th>Capacity</th><th>Rating</th><th>Accepted</th></tr></thead><tbody>`;
+    html+=ngos.map(n=>`<tr><td>🏥 ${n.name}</td><td>${n.email}</td><td>${n.location.address}</td><td>${n.capacity}</td><td>⭐${n.rating}</td><td>${donations.filter(d=>d.ngoId===n.id).length}</td></tr>`).join('');
+    html+='</tbody>';
+  } else if(type==='volunteers'){
+    html=`<thead><tr><th>Name</th><th>Location</th><th>Points</th><th>Deliveries</th><th>Rating</th><th>Status</th></tr></thead><tbody>`;
+    html+=volunteers.map(v=>`<tr><td>🚴 ${v.name}</td><td>${v.location?.address||'—'}</td><td><strong>${v.points||0}</strong></td><td>${v.deliveries||0}</td><td>⭐${v.rating}</td><td><span class="badge badge-safe">Active</span></td></tr>`).join('');
+    html+='</tbody>';
+  } else if(type==='donors'){
+    html=`<thead><tr><th>Name</th><th>Email</th><th>Location</th><th>Rating</th><th>Donations</th></tr></thead><tbody>`;
+    html+=donors.map(d=>`<tr><td>👤 ${d.name}</td><td>${d.email}</td><td>${d.location?.address||'—'}</td><td>⭐${d.rating}</td><td>${donations.filter(x=>x.donorId===d.id).length}</td></tr>`).join('');
+    html+='</tbody>';
+  }
+  document.getElementById(type==='donations'?'donationsTable':type==='ngos'?'ngosTable':type==='volunteers'?'volunteersTable':'donorsTable').innerHTML=html;
+}
+
+function renderKPIs(){
+  const donations=DB.list('donations');
+  const ngos=DB.list('ngos');
+  const volunteers=DB.list('volunteers');
+  const critical=donations.filter(d=>calcUrgency(d.expiry).label==='critical'&&d.status==='pending');
+  const warning=donations.filter(d=>calcUrgency(d.expiry).label==='warning'&&d.status==='pending');
+  const delivered=donations.filter(d=>d.status==='delivered');
+  const meals=donations.reduce((s,d)=>s+(d.unit==='meals'?d.quantity:Math.round(d.quantity/0.3)),0);
+  const kpis=[
+    {val:donations.length,label:'Total Donations',icon:'🍱',bg:'linear-gradient(135deg,#16A34A,#15803D)',color:'#fff'},
+    {val:meals+10240,label:'Meals Saved',icon:'🍛',bg:'linear-gradient(135deg,#15803D,#052e16)',color:'#fff'},
+    {val:critical.length,label:'🔴 Critical Items',icon:'🚨',bg:'linear-gradient(135deg,#EF4444,#DC2626)',color:'#fff'},
+    {val:warning.length,label:'🟠 Warning Items',icon:'⚠️',bg:'linear-gradient(135deg,#F97316,#EA580C)',color:'#fff'},
+    {val:delivered.length,label:'Delivered',icon:'📦',bg:'linear-gradient(135deg,#2563EB,#1D4ED8)',color:'#fff'},
+    {val:ngos.length,label:'NGO Partners',icon:'🏥',bg:'linear-gradient(135deg,#7C3AED,#6D28D9)',color:'#fff'},
+    {val:volunteers.length,label:'Volunteers',icon:'🚴',bg:'linear-gradient(135deg,#DB2777,#BE185D)',color:'#fff'},
+    {val:12,label:'Cities Covered',icon:'🌍',bg:'linear-gradient(135deg,#0891B2,#0E7490)',color:'#fff'},
+  ];
+  const grid=document.getElementById('kpiGrid');
+  kpis.forEach(k=>{
+    const div=document.createElement('div');
+    div.className='card kpi-card';
+    div.style.background=k.bg;div.style.border='none';
+    div.innerHTML=`<span class="kpi-val" style="color:${k.color};" id="kpi${k.label.replace(/\W/g,'')}">0</span><div class="kpi-label" style="color:${k.color};">${k.label}</div><div class="kpi-icon">${k.icon}</div>`;
+    grid.appendChild(div);
+    const el=div.querySelector('.kpi-val');
+    setTimeout(()=>animCount(el,k.val),300);
+  });
+  // Counter badges
+  document.getElementById('donorCount').textContent=`${DB.list('donors').length} Donors`;
+  document.getElementById('ngoCount').textContent=`${ngos.length} NGOs`;
+  document.getElementById('volCount').textContent=`${volunteers.length} Volunteers`;
+}
+
+function renderUrgencyChart(){
+  const donations=DB.list('donations').filter(d=>d.status==='pending');
+  const c=donations.filter(d=>calcUrgency(d.expiry).label==='critical').length;
+  const w=donations.filter(d=>calcUrgency(d.expiry).label==='warning').length;
+  const s=donations.filter(d=>calcUrgency(d.expiry).label==='safe').length;
+  const total=c+w+s||1;
+  const chart=document.getElementById('urgencyChart');
+  chart.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:.8rem;">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.3rem;"><span>🔴 Critical (≤2 days)</span><strong>${c}</strong></div>
+        <div class="progress-bar"><div style="height:100%;border-radius:4px;background:var(--critical);width:${c/total*100}%;transition:width 1s;"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.3rem;"><span>🟠 Warning (3–5 days)</span><strong>${w}</strong></div>
+        <div class="progress-bar"><div style="height:100%;border-radius:4px;background:var(--warning);width:${w/total*100}%;transition:width 1s;"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.3rem;"><span>🟢 Safe (&gt;5 days)</span><strong>${s}</strong></div>
+        <div class="progress-bar"><div style="height:100%;border-radius:4px;background:var(--safe);width:${s/total*100}%;transition:width 1s;"></div></div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;padding:1rem;background:var(--bg);border-radius:10px;">
+      <p style="font-size:.82rem;font-weight:600;color:var(--text-muted);">Platform Status</p>
+      <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap;">
+        <span class="badge badge-safe">✅ System Online</span>
+        <span class="badge badge-info">🤖 AI Matching Active</span>
+        ${c>0?`<span class="badge badge-critical pulse-critical">🚨 ${c} Critical Alert${c>1?'s':''}</span>`:''}
+      </div>
+    </div>`;
+}
+
+function refreshActivity(){
+  const donations=DB.list('donations');
+  const ngos=DB.list('ngos');
+  const volunteers=DB.list('volunteers');
+  const events=[];
+  donations.forEach(d=>{
+    events.push({time:d.created,text:`🍱 New donation: <strong>${d.foodName}</strong> by ${d.donorName}`,icon:'🍱',bg:'#DCFCE7'});
+    if(d.ngoId){const ngo=ngos.find(n=>n.id===d.ngoId);events.push({time:d.created,text:`✅ ${ngo?.name||'NGO'} accepted <strong>${d.foodName}</strong>`,icon:'🏥',bg:'#DBEAFE'});}
+    if(d.status==='delivered')events.push({time:d.created,text:`🎉 Delivered: <strong>${d.foodName}</strong> — ${d.quantity} ${d.unit} served`,icon:'📦',bg:'#FEF3C7'});
+  });
+  const feed=document.getElementById('activityFeed');
+  if(!events.length){feed.innerHTML='<p style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0;">No activity yet.</p>';return;}
+  feed.innerHTML=events.slice(0,12).map(e=>`
+  <div class="activity-item">
+    <div class="activity-icon" style="background:${e.bg};">${e.icon}</div>
+    <div><div class="activity-text">${e.text}</div><div class="activity-time">${fmtDate(e.time)} ${fmtTime(e.time)}</div></div>
+  </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderKPIs();
+  renderUrgencyChart();
+  refreshActivity();
+  renderTable('donations');
+  // Map
+  const map=new SABMap('adminMapCanvas');
+  const{markers,routes}=buildMapData();
+  DB.list('volunteers').forEach(v=>markers.push({lat:v.location.lat,lng:v.location.lng,type:'volunteer',label:v.name}));
+  map.load(markers,routes);
+  map.animate();
+  // Auto-refresh activity
+  setInterval(refreshActivity,10000);
+});
+</script>
+</body>
+</html>
